@@ -1,13 +1,11 @@
 {% extends 'master.html' %}
 
-{% block titulo %} Animes por formato {% endblock %}
+{% block titulo %} Búsqueda de Animes por formato {% endblock %}
 
 {% block contenido %} 
 <div class="uk-container uk-margin-large">
-    <h1>Búsqueda de Animes por Formato</h1>
-    
     <!-- Formulario -->
-    <form method="POST" class="uk-form-stacked">
+    <form method="POST" class="uk-form-stacked" style="display: inline-block; width: 100%;">
         {% csrf_token %}
         <div class="uk-margin">
             {{ form.formatoEmision.label_tag }}
