@@ -6,38 +6,35 @@ path = "data"
 def populate():
     populateAnime()
     populatePuntuaciones() 
+    print("Base de datos poblada con éxito.")
 
 def populateAnime():
-    Anime.objects.all().delete()
+    if Anime.objects.exists():
+        Anime.objects.all().delete()
 
     lista=[]
     fileobj=open(path+"\\anime.txt", "r", encoding='utf-8')
-    for line in fileobj.readlines():
+    for line in fileobj.readlines()[1:]: 
         rip = str(line.strip()).split('\t')
         if len(rip) != 5:
             continue
 
-        a = Anime(animeId=rip[0], titulo=rip[1], generos=rip[2], formatoEmision=parsearGeneros(rip[3]), numeroEpisodios=int(rip[4]))
+        if rip[4]=='Unknown':
+            rip[4]=0
+        a = Anime(animeId=rip[0], titulo=rip[1], generos=rip[2], formatoEmision=rip[3], numeroEpisodios=int(rip[4]))
         lista.append(a)
     fileobj.close()
     Anime.objects.bulk_create(lista)
 
     return(lista)
 
-def parsearGeneros(generosStr):
-    generos = generosStr.split(',')
-    listaGeneros = []
-    for genero in generos:
-        genero = genero.strip()
-        listaGeneros.append(genero)
-    return listaGeneros
-
 def populatePuntuaciones():
-    Puntuacion.objects.all().delete()
+    if Puntuacion.objects.exists():
+        Puntuacion.objects.all().delete()
 
     lista=[]
     fileobj=open(path+"\\ratings.txt", "r", encoding='utf-8')
-    for line in fileobj.readlines():
+    for line in fileobj.readlines()[1:]:
         rip = str(line.strip()).split('\t')
         if len(rip) != 3:
             continue

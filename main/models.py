@@ -4,22 +4,13 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 
-class Genero(models.Model):
-    generoId = models.AutoField(primary_key=True)
-    nombre = models.TextField(verbose_name='Género', unique=True)
-
-    def __str__(self):
-        return self.nombre
-    
-    class Meta:
-        ordering = ('nombre', )
 
 
 class Anime(models.Model):
     """ Anime: Animeid, Título, Géneros, Formato de emisión (TV, movie,…), Número de episodios. """
-    animeId = models.AutoField(primary_key=True)
+    animeId = models.AutoField(primary_key=True, default=None)
     titulo = models.TextField(verbose_name='Título')
-    generos = models.ManyToManyField(Genero)
+    generos = models.TextField(verbose_name='Géneros')
     formatoEmision = models.TextField(verbose_name='Formato de emisión', help_text='Ejemplo: TV, Movie, OVA, etc.')
     numeroEpisodios = models.IntegerField(verbose_name='Número de episodios', help_text='Debe introducir un número entero')
 
