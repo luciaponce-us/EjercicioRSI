@@ -33,11 +33,7 @@
                     {% for anime in animes %}
                         <tr>
                             <td>{{ anime.titulo }}</td>
-                            <td>
-                                {% for genero in anime.generos.all %}
-                                    <span class="uk-badge">{{ genero.nombre }}</span>
-                                {% endfor %}
-                            </td>
+                            <td>{{ anime.generos }}</td>
                             <td>{{ anime.formatoEmision }}</td>
                             <td>{{ anime.numeroEpisodios }}</td>
                         </tr>
