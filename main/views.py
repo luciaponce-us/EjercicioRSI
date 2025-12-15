@@ -57,7 +57,7 @@ def animes_por_formato(request):
         form = FormatoEmisionForm(request.POST)
         if form.is_valid():
             formato_seleccionado = form.cleaned_data['formatoEmision']
-            animes = Anime.objects.filter(formatoEmision=formato_seleccionado).order_by('numeroEpisodios')
+            animes = Anime.objects.filter(formatoEmision=formato_seleccionado).order_by('-numeroEpisodios')
             total_animes = animes.count()
     
     return render(request, 'animes_por_formato.html', {
