@@ -1,8 +1,18 @@
-#encoding:utf-8
 from django import forms
-   
-class UsuarioBusquedaForm(forms.Form):
-    idUsuario = forms.CharField(label="Id de Usuario", widget=forms.TextInput, required=True)
+from .models import Anime
+
+class FormatoEmisionForm(forms.Form):
+    formatoEmision = forms.ChoiceField(
+        label="Formato de emisión",
+        widget=forms.Select,
+        required=True
+    )
     
-class PeliculaBusquedaForm(forms.Form):
-    idPelicula = forms.CharField(label="Id de Pelicula", widget=forms.TextInput, required=True)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Obtener dinámicamente los formatos de la BD
+        formatos = Anime.objects.values_list('formatoEmision', flat=True).distinct().order_by('formatoEmision')
+        self.fields['formatoEmision'].choices = [('', '-- Selecciona un formato --')] + [(f, f) for f in formatos]
+
+class ConfirmarCarga(forms.Form):
+    confirmar = forms.BooleanField(label="Confirmar carga de datos en la base de datos", required=True)

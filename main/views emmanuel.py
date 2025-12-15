@@ -1,5 +1,5 @@
 #encoding:utf-8
-from main.models import Usuario, Puntuacion, Pelicula
+from main.models import Anime, Puntuacion
 from main.populateDB import populate
 from main.forms import  UsuarioBusquedaForm, PeliculaBusquedaForm
 from django.shortcuts import render, get_object_or_404
@@ -20,26 +20,23 @@ def loadDict():
     shelf = shelve.open("dataRS.dat")
     ratings = Puntuacion.objects.all()
     for ra in ratings:
-        user = int(ra.idUsuario.idUsuario)
-        itemid = int(ra.idPelicula.idPelicula)
-        rating = float(ra.puntuacion)
-        Prefs.setdefault(user, {})
-        Prefs[user][itemid] = rating
+        usuario = int(ra.usuarioId)
+        anime = int(ra.animeId.animeId)
+        puntuacion = float(ra.puntuacion)
+        Prefs.setdefault(usuario, {})
+        Prefs[usuario][anime] = puntuacion
     shelf['Prefs']=Prefs
-    shelf['ItemsPrefs']=transformPrefs(Prefs)
+    shelf['AnimePrefs']=transformPrefs(Prefs)
     shelf['SimItems']=calculateSimilarItems(Prefs, n=10)
     shelf.close()
 
 
-#Funcion de acceso restringido que carga los datos en la BD 
+#Funcion de acceso restringido que carga los datos en la BD  
+@login_required(login_url='/ingresar')
 def populateDatabase(request):
-    formulario = ConfirmarCarga()
-    if request.method=='POST':
-        formulario = ConfirmarCarga(request.POST)
-        if formulario.is_valid():
-            populate()
-            return HttpResponseRedirect('/index.html')
-    return render(request, 'index.html', {'formulario': formulario, 'STATIC_URL':settings.STATIC_URL})
+    populate()
+    logout(request)  # se hace logout para obligar a login cada vez que se vaya a poblar la BD
+    return HttpResponseRedirect('/index.html')
 
 
 def loadRS(request):
@@ -126,7 +123,6 @@ def recomendar_usuarios_pelicula(request):
 
 
 def mostrar_peliculas_parecidas(request):
-    formulario = PeliculaBusquedaForm()
     pelicula = None
     items = None
     
