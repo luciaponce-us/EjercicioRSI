@@ -31,13 +31,13 @@ def loadRS(request):
     return HttpResponseRedirect('/index.html')
 
 def populateDatabase(request):
+    mensaje = ''
     formulario = ConfirmarCarga()
     if request.method=='POST':
         formulario = ConfirmarCarga(request.POST)
         if formulario.is_valid():
-            populate()
-            return HttpResponseRedirect('/index.html')
-    return render(request, 'index.html', {'formulario': formulario, 'STATIC_URL':settings.STATIC_URL})
+            mensaje = populate()
+    return render(request, 'index.html', {'formulario': formulario, 'finalizado': mensaje, 'STATIC_URL':settings.STATIC_URL})
 
 
 def animes_por_formato(request):

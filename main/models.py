@@ -4,8 +4,6 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 
-
-
 class Anime(models.Model):
     """ Anime: Animeid, Título, Géneros, Formato de emisión (TV, movie,…), Número de episodios. """
     animeId = models.AutoField(primary_key=True, default=None)
