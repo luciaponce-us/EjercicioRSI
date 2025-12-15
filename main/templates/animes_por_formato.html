@@ -1,0 +1,54 @@
+{% extends 'master.html' %}
+
+{% block titulo %} Animes por formato {% endblock %}
+
+{% block contenido %} 
+<div class="uk-container uk-margin-large">
+    <h1>Búsqueda de Animes por Formato</h1>
+    
+    <!-- Formulario -->
+    <form method="POST" class="uk-form-stacked">
+        {% csrf_token %}
+        <div class="uk-margin">
+            {{ form.formatoEmision.label_tag }}
+            {{ form.formatoEmision }}
+        </div>
+        <button type="submit" class="uk-button uk-button-primary">Buscar</button>
+    </form>
+    
+    <!-- Resultados -->
+    {% if formato_seleccionado %}
+        <hr class="uk-divider-icon">
+        <h2>Resultados: {{ total_animes }} anime(s) encontrado(s) con formato "{{ formato_seleccionado }}"</h2>
+        
+        {% if animes %}
+            <table class="uk-table uk-table-striped uk-table-hover">
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Géneros</th>
+                        <th>Formato</th>
+                        <th>Número de Episodios</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for anime in animes %}
+                        <tr>
+                            <td>{{ anime.titulo }}</td>
+                            <td>
+                                {% for genero in anime.generos.all %}
+                                    <span class="uk-badge">{{ genero.nombre }}</span>
+                                {% endfor %}
+                            </td>
+                            <td>{{ anime.formatoEmision }}</td>
+                            <td>{{ anime.numeroEpisodios }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="uk-alert-warning" uk-alert>No se encontraron animes con este formato.</p>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}
