@@ -17,7 +17,7 @@ class Genero(models.Model):
 
 class Anime(models.Model):
     """ Anime: Animeid, Título, Géneros, Formato de emisión (TV, movie,…), Número de episodios. """
-    animeId = models.AutoField(primary_key=True)
+    animeId = models.AutoField(primary_key=True, default=None)
     titulo = models.TextField(verbose_name='Título')
     generos = models.ManyToManyField(Genero)
     formatoEmision = models.TextField(verbose_name='Formato de emisión', help_text='Ejemplo: TV, Movie, OVA, etc.')
