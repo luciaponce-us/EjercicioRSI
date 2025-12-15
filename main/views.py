@@ -26,6 +26,9 @@ def loadDict():
     shelf['SimItems']=calculateSimilarItems(Prefs, n=10)
     shelf.close()
 
+def loadRS(request):
+    loadDict()
+    return HttpResponseRedirect('/index.html')
 
 def populateDatabase(request):
     formulario = ConfirmarCarga()

@@ -6,6 +6,7 @@ path = "data"
 def populate():
     populateAnime()
     populatePuntuaciones() 
+    print("Base de datos poblada con éxito.")
 
 def populateAnime():
     Anime.objects.all().delete()
