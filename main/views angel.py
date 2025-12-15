@@ -32,10 +32,8 @@ def loadDict():
 
 
 #Funcion de acceso restringido que carga los datos en la BD  
-@login_required(login_url='/ingresar')
 def populateDatabase(request):
     populate()
-    logout(request)  # se hace logout para obligar a login cada vez que se vaya a poblar la BD
     return HttpResponseRedirect('/index.html')
 
 
