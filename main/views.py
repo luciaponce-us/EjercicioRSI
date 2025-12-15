@@ -31,6 +31,7 @@ def loadRS(request):
     return HttpResponseRedirect('/index.html')
 
 def populateDatabase(request):
+    mensaje = ''
     formulario = ConfirmarCarga()
     if request.method=='POST':
         formulario = ConfirmarCarga(request.POST)
