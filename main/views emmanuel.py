@@ -8,6 +8,7 @@ from django.conf import settings
 from main.recommendations import  transformPrefs, calculateSimilarItems, getRecommendations, getRecommendedItems, topMatches
 import shelve
 
+from django.db.models import Count
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
@@ -27,7 +28,7 @@ def loadDict():
         Prefs[usuario][anime] = puntuacion
     shelf['Prefs']=Prefs
     shelf['AnimePrefs']=transformPrefs(Prefs)
-    shelf['SimItems']=calculateSimilarItems(Prefs, n=10)
+    shelf['SimItems']=calculateSimilarItems(Prefs, n=3)
     shelf.close()
 
 
@@ -122,28 +123,24 @@ def recomendar_usuarios_pelicula(request):
     return render(request, 'recomendar_usuarios_peliculas.html', {'formulario':formulario, 'items':items, 'pelicula':pelicula, 'STATIC_URL':settings.STATIC_URL})
 
 
-def mostrar_peliculas_parecidas(request):
-    pelicula = None
+    
+
+
+def animes_mas_populares(request):
+    AnimesParecidos = None
     items = None
-    
-    if request.method=='POST':
-        formulario = PeliculaBusquedaForm(request.POST)
+    animes_mejor_valorados = Puntuacion.objects.values('animeId').annotate(num_votos=Count('animeId')).order_by('-num_votos')[:3]
+    shelf = shelve.open("dataRS.dat")
+    AnimePrefs = shelf['AnimePrefs']
+    shelf.close()
+    for anime in animes_mejor_valorados:
         
-        if formulario.is_valid():
-            idPelicula = formulario.cleaned_data['idPelicula']
-            pelicula = get_object_or_404(Pelicula, pk=idPelicula)
-            shelf = shelve.open("dataRS.dat")
-            ItemsPrefs = shelf['ItemsPrefs']
-            shelf.close()
-            parecidas = topMatches(ItemsPrefs, int(idPelicula),n=3)
-            peliculas = []
-            similaridad = []
-            for re in parecidas:
-                peliculas.append(Pelicula.objects.get(pk=re[1]))
-                similaridad.append(re[0])
-            items= zip(peliculas,similaridad)
+    peliculas = []
+    similaridad = []
+
+    items= zip(peliculas,similaridad)
     
-    return render(request, 'peliculas_similares.html', {'formulario':formulario, 'pelicula': pelicula, 'items': items, 'STATIC_URL':settings.STATIC_URL})
+    return render(request, 'peliculas_similares.html')
 
 
 
