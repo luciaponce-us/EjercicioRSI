@@ -37,7 +37,6 @@ def populateDatabase(request):
         formulario = ConfirmarCarga(request.POST)
         if formulario.is_valid():
             mensaje = populate()
-            return HttpResponseRedirect('/index.html')
     return render(request, 'index.html', {'formulario': formulario, 'finalizado': mensaje, 'STATIC_URL':settings.STATIC_URL})
 
 
