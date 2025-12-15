@@ -16,13 +16,13 @@ def loadDict():
     shelf = shelve.open("dataRS.dat")
     ratings = Puntuacion.objects.all()
     for ra in ratings:
-        user = int(ra.idUsuario.idUsuario)
-        itemid = int(ra.idPelicula.idPelicula)
-        rating = float(ra.puntuacion)
-        Prefs.setdefault(user, {})
-        Prefs[user][itemid] = rating
+        usuario = int(ra.usuarioId)
+        anime = int(ra.animeId.animeId)
+        puntuacion = float(ra.puntuacion)
+        Prefs.setdefault(usuario, {})
+        Prefs[usuario][anime] = puntuacion
     shelf['Prefs']=Prefs
-    shelf['ItemsPrefs']=transformPrefs(Prefs)
+    shelf['AnimePrefs']=transformPrefs(Prefs)
     shelf['SimItems']=calculateSimilarItems(Prefs, n=10)
     shelf.close()
 
@@ -31,13 +31,14 @@ def loadRS(request):
     return HttpResponseRedirect('/index.html')
 
 def populateDatabase(request):
+    mensaje = ''
     formulario = ConfirmarCarga()
     if request.method=='POST':
         formulario = ConfirmarCarga(request.POST)
         if formulario.is_valid():
-            populate()
+            mensaje = populate()
             return HttpResponseRedirect('/index.html')
-    return render(request, 'index.html', {'formulario': formulario, 'STATIC_URL':settings.STATIC_URL})
+    return render(request, 'index.html', {'formulario': formulario, 'finalizado': mensaje, 'STATIC_URL':settings.STATIC_URL})
 
 
 def animes_por_formato(request):
