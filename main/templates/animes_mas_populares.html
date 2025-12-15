@@ -13,14 +13,9 @@
         {% for resultado in resultados %}
             <div class="uk-card uk-card-default uk-card-body uk-margin-medium">
                 <h3 class="uk-card-title">{{ resultado.anime.titulo }}</h3>
-                <dl class="uk-description-list">
-                    <dt>Géneros:</dt>
-                    <dd>{{ resultado.anime.generos }}</dd>
-                    <dt>Formato:</dt>
-                    <dd>{{ resultado.anime.formatoEmision }}</dd>
-                    <dt>Episodios:</dt>
-                    <dd>{{ resultado.anime.numeroEpisodios }}</dd>
-                </dl>
+                <p class="uk-text-bold">
+                    Total de puntuaciones recibidas: {{ resultado.num_votos }}
+                </p>
                 
                 {% if resultado.similares %}
                     <h4 class="uk-margin-medium-top">Animes Similares:</h4>
@@ -28,7 +23,6 @@
                         <thead>
                             <tr>
                                 <th>Título</th>
-                                <th>Géneros</th>
                                 <th>Similitud</th>
                             </tr>
                         </thead>

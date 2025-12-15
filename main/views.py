@@ -78,7 +78,7 @@ def animes_mas_populares(request):
 
     for anime in animes_mejor_valorados:
         AnimesParecidos = Animesimilares.get(anime['animeId'], [])[:3]
-        
+        num_votos = anime['num_votos']
         similares = []
         for similitud, anime_similar_id in AnimesParecidos:
             try:
@@ -92,6 +92,7 @@ def animes_mas_populares(request):
 
         resultados.append({
             'anime': Anime.objects.get(animeId=anime['animeId']),
+            'num_votos': num_votos,
             'similares': similares
         })
 
