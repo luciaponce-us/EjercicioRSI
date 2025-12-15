@@ -123,24 +123,31 @@ def recomendar_usuarios_pelicula(request):
     return render(request, 'recomendar_usuarios_peliculas.html', {'formulario':formulario, 'items':items, 'pelicula':pelicula, 'STATIC_URL':settings.STATIC_URL})
 
 
-    
-
 
 def animes_mas_populares(request):
-    AnimesParecidos = None
-    items = None
     animes_mejor_valorados = Puntuacion.objects.values('animeId').annotate(num_votos=Count('animeId')).order_by('-num_votos')[:3]
     shelf = shelve.open("dataRS.dat")
-    AnimePrefs = shelf['AnimePrefs']
+    Animesimilares = shelf['SimItems']
     shelf.close()
-    for anime in animes_mejor_valorados:
-        
-    peliculas = []
-    similaridad = []
+    resultados = []
 
-    items= zip(peliculas,similaridad)
-    
-    return render(request, 'peliculas_similares.html')
+    for anime in animes_mejor_valorados:
+        AnimesParecidos = Animesimilares[anime['animeId']][:3]
+
+        resultados.append({
+            'anime': Anime.objects.get(animeId=anime['animeId']),
+            'similares': [
+                {
+                    'anime': Anime.objects.get(animeId=anime_similar_id),
+                    'similitud': similitud
+                }
+                for similitud, anime_similar_id in AnimesParecidos
+            ]
+        })
+
+    return render(request, 'peliculas_similares.html', {
+        'resultados': resultados
+    })
 
 
 
