@@ -31,10 +31,15 @@ def loadDict():
     shelf.close()
 
 
-#Funcion de acceso restringido que carga los datos en la BD  
+#Funcion de acceso restringido que carga los datos en la BD 
 def populateDatabase(request):
-    populate()
-    return HttpResponseRedirect('/index.html')
+    formulario = ConfirmarCarga()
+    if request.method=='POST':
+        formulario = ConfirmarCarga(request.POST)
+        if formulario.is_valid():
+            populate()
+            return HttpResponseRedirect('/index.html')
+    return render(request, 'index.html', {'formulario': formulario, 'STATIC_URL':settings.STATIC_URL})
 
 
 def loadRS(request):
