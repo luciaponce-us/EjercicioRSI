@@ -77,19 +77,25 @@ def animes_mas_populares(request):
     resultados = []
 
     for anime in animes_mejor_valorados:
-        AnimesParecidos = Animesimilares[anime['animeId']][:3]
+        AnimesParecidos = Animesimilares.get(anime['animeId'], [])[:3]
+        
+        similares = []
+        for similitud, anime_similar_id in AnimesParecidos:
+            try:
+                anime_obj = Anime.objects.get(animeId=anime_similar_id)
+                similares.append({
+                    'anime': anime_obj,
+                    'similitud': similitud
+                })
+            except Anime.DoesNotExist:
+                continue
 
         resultados.append({
             'anime': Anime.objects.get(animeId=anime['animeId']),
-            'similares': [
-                {
-                    'anime': Anime.objects.get(animeId=anime_similar_id),
-                    'similitud': similitud
-                }
-                for similitud, anime_similar_id in AnimesParecidos
-            ]
+            'similares': similares
         })
 
-    return render(request, 'peliculas_similares.html', {
-        'resultados': resultados
+    return render(request, 'animes_mas_populares.html', {
+        'resultados': resultados,
+        'STATIC_URL': settings.STATIC_URL
     })

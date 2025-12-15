@@ -1,0 +1,54 @@
+{% extends 'master.html' %}
+
+{% block titulo %} Animes Más Populares {% endblock %}
+
+{% block contenido %} 
+<div class="uk-container uk-margin-large">
+    <h2>Los 3 Animes Más Populares</h2>
+    <p class="uk-text-meta">Basados en el número de puntuaciones recibidas</p>
+    
+    <hr class="uk-divider-icon">
+    
+    {% if resultados %}
+        {% for resultado in resultados %}
+            <div class="uk-card uk-card-default uk-card-body uk-margin-medium">
+                <h3 class="uk-card-title">{{ resultado.anime.titulo }}</h3>
+                <dl class="uk-description-list">
+                    <dt>Géneros:</dt>
+                    <dd>{{ resultado.anime.generos }}</dd>
+                    <dt>Formato:</dt>
+                    <dd>{{ resultado.anime.formatoEmision }}</dd>
+                    <dt>Episodios:</dt>
+                    <dd>{{ resultado.anime.numeroEpisodios }}</dd>
+                </dl>
+                
+                {% if resultado.similares %}
+                    <h4 class="uk-margin-medium-top">Animes Similares:</h4>
+                    <table class="uk-table uk-table-small uk-table-divider">
+                        <thead>
+                            <tr>
+                                <th>Título</th>
+                                <th>Géneros</th>
+                                <th>Similitud</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for similar in resultado.similares %}
+                                <tr>
+                                    <td>{{ similar.anime.titulo }}</td>
+                                    <td>{{ similar.anime.generos }}</td>
+                                    <td>{{ similar.similitud|floatformat:2 }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="uk-alert-warning" uk-alert>
+            <p>No hay datos disponibles. Asegúrate de haber cargado la base de datos y el sistema de recomendación.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
