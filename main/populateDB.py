@@ -4,9 +4,11 @@ from datetime import datetime
 path = "data"
 
 def populate():
-    populateAnime()
-    populatePuntuaciones() 
-    print("Base de datos poblada con éxito.")
+    numeroanimes = populateAnime()
+    numeropuntuaciones = populatePuntuaciones() 
+    mensaje = f"Se han cargado {numeroanimes} animes y {numeropuntuaciones} puntuaciones en la base de datos"
+    print(mensaje)
+    return mensaje
 
 def populateAnime():
     if Anime.objects.exists():
@@ -26,7 +28,7 @@ def populateAnime():
     fileobj.close()
     Anime.objects.bulk_create(lista)
 
-    return(lista)
+    return len(lista)
 
 def populatePuntuaciones():
     if Puntuacion.objects.exists():
@@ -43,4 +45,4 @@ def populatePuntuaciones():
         lista.append(p)
     fileobj.close()
     Puntuacion.objects.bulk_create(lista)
-    return(lista)
+    return len(lista)
