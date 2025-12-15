@@ -6,7 +6,7 @@ import shelve
 from main.recommendations import  transformPrefs, calculateSimilarItems
 from main.populateDB import populate
 from django.http.response import HttpResponseRedirect
-
+from django.db.models import Count
 
 def index(request):
     return render(request, 'index.html', {'STATIC_URL': settings.STATIC_URL})
@@ -37,7 +37,6 @@ def populateDatabase(request):
         formulario = ConfirmarCarga(request.POST)
         if formulario.is_valid():
             mensaje = populate()
-            return HttpResponseRedirect('/index.html')
     return render(request, 'index.html', {'formulario': formulario, 'finalizado': mensaje, 'STATIC_URL':settings.STATIC_URL})
 
 
@@ -67,4 +66,30 @@ def animes_por_formato(request):
         'animes': animes,
         'total_animes': total_animes,
         'formato_seleccionado': formato_seleccionado
+    })
+
+
+def animes_mas_populares(request):
+    animes_mejor_valorados = Puntuacion.objects.values('animeId').annotate(num_votos=Count('animeId')).order_by('-num_votos')[:3]
+    shelf = shelve.open("dataRS.dat")
+    Animesimilares = shelf['SimItems']
+    shelf.close()
+    resultados = []
+
+    for anime in animes_mejor_valorados:
+        AnimesParecidos = Animesimilares[anime['animeId']][:3]
+
+        resultados.append({
+            'anime': Anime.objects.get(animeId=anime['animeId']),
+            'similares': [
+                {
+                    'anime': Anime.objects.get(animeId=anime_similar_id),
+                    'similitud': similitud
+                }
+                for similitud, anime_similar_id in AnimesParecidos
+            ]
+        })
+
+    return render(request, 'peliculas_similares.html', {
+        'resultados': resultados
     })
